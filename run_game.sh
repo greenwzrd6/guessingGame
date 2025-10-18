@@ -1,10 +1,27 @@
 #!/bin/bash
 
+echo ""
+
 #declaring variables
 NAME="David_Lindberg"
 DIR="${NAME}_labb"
 
 echo "${NAME}'s program"
+
+echo ""
+sleep 1
+
+#decided to create an array of dots and then animate a countdown
+#to make the script look a little more fun
+
+dots=("" "." ".." "...")
+
+for d in "${dots[@]}"
+do
+  echo -ne "Creating folder$d\r"
+  sleep 0.5
+  echo -ne "\r                       \r"
+done
 
 #made an if statement for making the dir and copying the files
 #incase they already exist 
@@ -15,6 +32,16 @@ then
 else
   echo "Folder already exists, continuing"
 fi
+
+echo ""
+sleep 1
+
+for d in "${dots[@]}"
+do
+  echo -ne "Copying files$d\r"
+  sleep 0.5
+  echo -ne "\r                       \r"
+done
 
 #added so that the package declaration gets removed by not reading the first line
 #then copying the read file into a new file and then changing it name to its original name
@@ -30,31 +57,43 @@ else
   echo "Files already exist, continuing"
 fi
 
+echo ""
+sleep 1
+
 cd "$DIR"
 
 echo "Running game from $(pwd)"
+echo ""
 
 javac GuessingGame.java
-
-#decided to create an array of dots and then animate a countdown
-#to make the script look a little more fun
-
-dots=("" "." ".." "...")
 
 for d in "${dots[@]}"
   do
     echo -ne "Compiling script$d\r"
     sleep 0.5
     echo -ne "\r                   \r"
-  done
+done
 
 echo "Done compiling!"
 
-echo "Running game"
+sleep 1
+clear
+
+for d in "${dots[@]}"
+  do
+    echo -ne "Starting game$d\r"
+    sleep 0.5
+    echo -ne "\r                   \r"
+done
 
 java GuessingGame
 
 echo "Done!"
+echo ""
+read -p "Press Enter to continue..."
+
+sleep 0.5
+clear
 
 for d in "${dots[@]}"
 do
