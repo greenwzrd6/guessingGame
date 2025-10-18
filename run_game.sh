@@ -49,3 +49,9 @@ for d in "${dots[@]}"
   done
 
 echo "Done compiling!"
+
+echo "Running game"
+
+java GuessingGame
+
+echo "Done!"
