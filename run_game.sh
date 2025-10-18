@@ -55,3 +55,18 @@ echo "Running game"
 java GuessingGame
 
 echo "Done!"
+
+for d in "${dots[@]}"
+do
+  echo -ne "Removing class files$d\r"
+  sleep 0.5
+  echo -ne "\r                       \r"
+done
+
+for file in *.class
+do
+  rm "$file"
+done
+
+echo "Listing files in ${DIR}:"
+ls
