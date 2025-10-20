@@ -1,0 +1,140 @@
+1. Vad är pull repektive push?
+
+Pull används för att hämta de senaste filerna som du har laddat upp till ditt github till ditt lokala repo. 
+T.ex. om din kollega har uppdaterat github repositoryt men du har inte pullat så har du inte det senaste.
+men om du använder git pull så får du det senaste som laddats upp till github repot.
+
+Push används för att ladda upp de senaste filerna som du har commitat i ditt lokala repo till ditt github repo.
+
+2. När använder man log respektive status?
+
+log används för att se alla dina commits som du har gjort och de kommentarerna du har skrivit där.
+status används för att se vad som har ändrats i realtid även om du inte commitar det. 
+t.ex. så har du commitat en fil som heter hej.txt, 
+om du sedan ändrar i den filen så kommer det visas i status. 
+Om du sedan commitar den ändringen och skriver log så ser du den commiten där och alla tidigare commits.'
+man ser också commit hash när man kör log för varje commit.
+
+3. Vad är en Git branch och varför är de viktiga?
+
+En git branch är ett sätt att klona sin nuvarande main/master branch till en ny som du väljer namn på för att göra ändringar 
+som du kanske vill testa utan att ändra i din main branch.
+Eller lägga till saker utan att ändra i din main branch och sedan mergea när du vet att det fungerar.
+t.ex. så ska du lägga till en branch som heter script och så använder du den för att göra
+och testa scripts och sen merga till main när du har testat klart.
+
+4. Det finns flera sätt att rulla tillbaka koden till ett tidigare tillstånd. 
+Förklara skillnaden och motivera när man skulle använda den ena eller andra metoden.
+Ge exempel på de kommandon du använder för att göra detta och visa att det fungerar,
+vilken output du fick från git-kommandona.
+Tips: Gör exemplen med att backa i en branch så att master fortfarande är korrekt. 
+
+restore, återställer filer,
+revert, skapar ny commit som tar bort de ändringarna du vill återställa.
+reset (--soft, --mixed, --hard), flyttar hela HEAD tillbaka och tar bort den nuvarande HEAD. 
+Så alla ändringar försvinner,
+det är risky eftersom det som du ville ta bort sparas inte alls utan bara försvinner.
+
+Exempel på restore:
+
+jag har en fil som heter hej.txt där det står "hej" på första raden.
+Jag ändrar sedan så att det står "hej hej" på första raden och andra raden "då".
+Sedan kör jag git status och ser att jag har ändrat filen. Jag ångrar mig och vill ha tillbaka orginalet.
+Då skriver jag git restore hej.txt och så ändras det tillbaka.
+
+Exempel på reset:
+
+Jag har filen hej.txt det står "hej" på första raden.
+Jag lägger till så det står "monkey" på andra raden.
+sen commitar jag.
+Jag ångrar mig sen och vill ha tillbaka så att det bara står "hej", 
+eller så vill jag ändra mitt commit meddelande, 
+eller så har jag råkat lägga till två filer i commiten.
+
+Om jag bara vill ändra tillbaka så att det står "hej" utan att göra nåt mer
+använder jag git reset --hard HEAD~1 .
+då revertas mina ändringar tillbaka till den tidigare committen.
+så här står det: HEAD är nu på a3190ce added feature.txt
+
+Om jag vill ändra mitt commit meddelande så kan jag använda mig av
+git reset --soft HEAD~1 .
+då ser allt ut såhär:
+
+$ git add .
+
+$ git commit -m "add new text to aaaaaa"
+[master 491bbab] add new text to aaaaaa
+ 1 file changed, 1 insertion(+)
+
+$ git log --oneline
+491bbab (HEAD -> master) add new text to aaaaaa
+a3190ce (feature-branch) added feature.txt
+e7d0450 added hej.txt
+
+$ git reset --soft HEAD~1
+
+$ git status
+På grenen master
+Ändringar att checka in:
+  (använd ”git restore --staged <fil>...” för att ta bort från kö)
+	ändrad:        hej.txt
+
+
+$ git commit -m "add new text to hej.txt"
+[master 65ca3a7] add new text to hej.txt
+ 1 file changed, 1 insertion(+)
+
+Om jag har råkat lägga till två filer i min commit så kan jag använda mig av
+git reset HEAD~1 eller git reset --mixed HEAD~1 (git reset --mixed är samma som git reset)
+då blir resultatet så här:
+
+$ git add .
+
+$ git status
+På grenen master
+Ändringar att checka in:
+  (använd ”git restore --staged <fil>...” för att ta bort från kö)
+	ändrad:        feature.txt
+	ändrad:        hej.txt
+
+
+$ git commit -m "added two files by mistake"
+[master ac4d8cb] added two files by mistake
+ 2 files changed, 2 insertions(+)
+
+$ git reset HEAD~1
+Oköade ändringar efter återställning:
+M	feature.txt
+M	hej.txt
+
+$ git add hej.txt 
+
+$ git commit -m "added only hej.txt"
+[master d2c97ce] added only hej.txt
+ 1 file changed, 1 insertion(+)
+
+
+Exempel på git revert.
+
+Jag har gjort en commit med hej.txt som jag vill rulla tillbaka, då använder jag
+git revert.
+då blir det såhär:
+
+$ git log --oneline
+d2c97ce (HEAD -> master) added only hej.txt
+a3190ce (feature-branch) added feature.txt
+e7d0450 added hej.txt
+
+$ git revert a3190ce
+
+(här kommer det upp en texteditor där man kan skriva lite kommentarer om varför man revertar)
+
+[master 4930022] Revert "added feature.txt"
+ 1 file changed, 0 insertions(+), 0 deletions(-)
+ delete mode 100644 feature.txt
+
+$ git log --oneline
+4930022 (HEAD -> master) Revert "added feature.txt"
+d2c97ce added only hej.txt
+a3190ce (feature-branch) added feature.txt
+e7d0450 added hej.txt

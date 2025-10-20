@@ -48,7 +48,7 @@ done
 if [ ! -f "$DIR/GuessingGame.java" ] && [ ! -f "$DIR/Guesser.java" ]
 then
   cp "se/yrgo/game/GuessingGame.java" "se/yrgo/game/Guesser.java" "$DIR"
-  for file in "$DIR/GuessingGame.java" "$DIR/Guesser.java"
+  for file in "$DIR"/*.java
   do
     tail -n +2 "$file" > "${file}.tmp" && mv "${file}.tmp" "$file"
   done
