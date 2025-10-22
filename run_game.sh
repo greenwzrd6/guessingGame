@@ -1,6 +1,6 @@
 #!/bin/bash
 
-echo ""
+clear
 
 #declaring variables
 NAME="David_Lindberg"
@@ -104,7 +104,7 @@ done
 
 for file in *.class
 do
-  rm "$file"
+  rm -f "$file"
 done
 
 echo "Listing files in ${DIR}:"
