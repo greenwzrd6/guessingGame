@@ -17,8 +17,8 @@ man ser också commit hash när man kör log för varje commit.
 
 3. Vad är en Git branch och varför är de viktiga?
 
-En git branch är ett sätt att klona sin nuvarande main/master branch till en ny som du väljer namn på för att göra ändringar 
-som du kanske vill testa utan att ändra i din main branch.
+En git branch är ett sätt att klona sin nuvarande branch till en ny som du väljer namn på för att göra ändringar 
+som du kanske vill testa utan att ändra i t.ex. din main branch.
 Eller lägga till saker utan att ändra i din main branch och sedan mergea när du vet att det fungerar.
 t.ex. så ska du lägga till en branch som heter script och så använder du den för att göra
 och testa scripts och sen merga till main när du har testat klart.
