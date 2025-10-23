@@ -40,7 +40,8 @@ Exempel på restore:
 jag har en fil som heter hej.txt där det står "hej" på första raden.
 Jag ändrar sedan så att det står "hej hej" på första raden och andra raden "då".
 Sedan kör jag git status och ser att jag har ändrat filen. Jag ångrar mig och vill ha tillbaka orginalet.
-Då skriver jag git restore hej.txt och så ändras det tillbaka.
+Då skriver jag git restore hej.txt och så ändras det tillbaka till senaste comitten.
+Det går också att använda git restore --staged vilket tar bort filen från staging arean.
 
 Exempel på reset:
 
