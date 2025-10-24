@@ -210,11 +210,11 @@ Jag gjorde en ny fil apa.txt i main och laddade upp den till github repot.
 Sedan så gick jag in i github repot och ändrade i filen.
 Jag går sedan till mitt lokala repo och byter till branchen userOne.
 Jag skapar en filen apa.txt och skriver in text i den och commitar.
-Sedan kör jag en git commit origin/main och får en konflikt.
+Sedan kör jag en git merge origin/main och får en konflikt.
 Jag fixar konflikten och sedan så gör jag en ny commit och skriver att jag fixade konflikten.
 Sedan försöker jag pusha upp till origin/userOne och det fungerar.
 Men det fungerar inte att pusha upp till origin/main eftersom jag har glömt att pulla de senaste ändringarna från origin main.
-Detta är bra eftersom jag inte kan skriva över origin main som jag kunde med git rebase.
+Detta är bra eftersom jag inte kan råka skriva över origin main som jag kunde med git rebase.
 Jag gör då en merge med min origin/userOne och origin/main och får en merge konflikt.
 Sedan så kan jag ändra apa.txt så att jag löser konflikten och sedan så pushar jag till origin main.
 Allt fungerar!
