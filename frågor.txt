@@ -139,3 +139,106 @@ $ git log --oneline
 d2c97ce added only hej.txt
 a3190ce (feature-branch) added feature.txt
 e7d0450 added hej.txt
+
+Kommer satsa på VG
+
+1. Beskriv och jämför hur man kan använda git rebase och git merge i ett scenario där flera utvecklare jobbar på olika feature branches. 
+Diskutera fördelarna och nackdelarna med båda teknikerna, samt hur de påverkar historiken.
+
+När jag använder git rebase så ändrar man hela historiken till en ny "snyggare" historik.
+T.ex. om jag har en feature branch och jag har massa commits i den (commit 1 skapade en ny fil, commit 2 gjorde fel och gjorde om, commit 3 jag skapade en ny fil och en till grej, och commit 4 jag gjorde fel och gjorde om)
+Före jag t.ex. mergar den branchen till main så kan jag snygga till commit historiken genom att använda git rebase så blir det en helt ny commit historik.
+Jag kan också använda git rebase -i som gör att jag får välja vad det är som squashas ihop så t.ex. så kan jag göra så att commit 1 och 2 blir en och samma commit och commit 3 och 4 blir en och samma commit.
+Men detta kan bli problematiskt när jag jobbar med flera personer eftersom jag faktiskt ändrar den lokala historiken.
+Så om jag har ett github repo och ska pusha efter jag har gjort en rebase så funkar det inte normalt.
+Då måste jag använda git push --force men då förstör jag den tidigare historiken som redan finns på github.
+Det kan skapa stora problem för folk som jobbar på samma branch som mig t.ex. eller när man ska merga med main.
+När folk som jobbar med mig använder git push så kommer de få error och då blir det fel.
+Det kan bli ännu mer fel om flera personer använder git rebase på samma branch eftersom alla skapar olika commit historiker.
+Det värsta är att när man använder git push --force( eller --force-with-lease) för att ladda upp filer och någon redan hunnit göra
+flera commits före dig så kommer deras commits försvinna när du forcear upp dina ändringar som du har rebasat.
+
+Det som dock är bra med rebase är att historiken ser snyggare ut, men det är väldigt riskfyllt att använda när man är fler än en person.
+
+git merge är mycket bättre att använda med flera personer eftersom det skapar merge conflicts så du kan prata med dina kollegor om vad ni vill behålla och ta bort.
+T.ex. om du har kod där det står System.out.println("Hej"); i din main och din kollega ändrar den raden till System.out.println("Tjenare"); i sin branch.
+Och sen kör kollegan git merge med main, så kommer hen få en merge conflict och kan då gå in i filen och se vad som blir fel.
+Då kan hen prata med dig och fråga hur ni ska göra.
+Sedan när man har löst merge conflicten så skapas en ny commit och allt är frid och fröjd.
+Det negativa med att använda git merge är att historiken kan se lite rörig ut. T.ex. om man har massor med historik som har commits med t.ex. "gjorde fel här", "gjorde fel där"
+så kommer de commitsen fortfarande synas.
+
+Men det är mycket bättre att använda merge om man är flera eftersom det är mycket svårare att råka göra fel.
+
+2. Uppgift: Skapa ett repo med två eller fler feature branches som utvecklare arbetar på. 
+Beskriv hur du löser konflikter som uppstår under rebase och merge och visa slutresultatet i historiken.
+Exempel: Använd kommandon som git rebase, git merge för att illustrera skillnaderna.
+
+Jag gjorde ett nytt repo på github och lokalt på min dator och kopplade samman. Skapade en branch som heter userOne som jag pushar också.
+Sedan på laddade jag upp en fil "hej.txt" och sen ändrade jag den direkt i github för att skapa skillnad mellan remote och lokalt.
+Sedan byter jag till userOne och redigerar hej.txt och commitar.
+Jag gör en git fetch för att få ändringarna och sen kör jag en git diff för att se vad skillnaden är.
+Jag ska nu göra en git rebase med origin main. Då får jag en konflikt :
+
+$ git rebase origin/main
+Slår ihop hej.txt automatiskt
+KONFLIKT (innehåll): Sammanslagningskonflikt i hej.txt
+fel: kunde inte tillämpa 3906b60... changed hej.txt text
+tips: Resolve all conflicts manually, mark them as resolved with
+tips: "git add/rm <conflicted_files>", then run "git rebase --continue".
+tips: You can instead skip this commit: run "git rebase --skip".
+tips: To abort and get back to the state before "git rebase", run "git rebase --abort".
+tips: Disable this message with "git config set advice.mergeConflict false"
+Kunde inte tillämpa 3906b60... # changed hej.txt text
+
+Jag går in i hej.txt och kollar vad konflikten är.
+Jag ändrar och tar bort konflikterna.
+och sen kör jag git add hej.txt och sen git rebase --continue:
+
+ git rebase --continue
+[frånkopplad HEAD bb1d77b] changed hej.txt text
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+Lyckades ombasera och uppdatera refs/heads/userOne.
+
+bb1d77b (HEAD -> userOne) changed hej.txt text
+786c324 (origin/main, origin/HEAD) Update hej.txt
+0a70283 (origin/userOne, main) add hej.txt with text
+
+Nu ska jag demonstrera hur jag använder git merge:
+
+Jag gjorde en ny fil apa.txt i main och laddade upp den till github repot.
+Sedan så gick jag in i github repot och ändrade i filen.
+Jag går sedan till mitt lokala repo och byter till branchen userOne.
+Jag skapar en filen apa.txt och skriver in text i den och commitar.
+Sedan kör jag en git commit origin/main och får en konflikt.
+Jag fixar konflikten och sedan så gör jag en ny commit och skriver att jag fixade konflikten.
+Sedan försöker jag pusha upp till origin/userOne och det fungerar.
+Men det fungerar inte att pusha upp till origin/main eftersom jag har glömt att pulla de senaste ändringarna från origin main.
+Detta är bra eftersom jag inte kan skriva över origin main som jag kunde med git rebase.
+Jag gör då en merge med min origin/userOne och origin/main och får en merge konflikt.
+Sedan så kan jag ändra apa.txt så att jag löser konflikten och sedan så pushar jag till origin main.
+Allt fungerar!
+
+Här är git log:
+
+f2f9ad1 (HEAD -> main, origin/main, origin/HEAD) fixed conflict in apa.txt
+d877100 (origin/userOne, userOne) fixed a conflict in apa.txt
+ecf389e added apa.txt with text
+da9aaeb Update apa.txt
+ff04e2f Create apa.txt
+bb1d77b changed hej.txt text
+786c324 Update hej.txt
+0a70283 add hej.txt with text
+
+
+3. Motivering: Förklara varför rebase ibland används i stället för merge för att hålla en renare historik och när merge är att föredra för att bibehålla kontext mellan commits.
+Rebase används för att hålla en renare historik eftersom den tar den gamla historiken och "skriver över den". 
+T.ex. om du har commit A - B - C i main och (D utgår från C i main) D - E - F i feature-branch
+och sedan ändrar du i main och lägger till två nya commits A - B - C - D - E
+sedan kör du en git rebase main från feature-branch. Så kommer feature branch utgå från de nya commitsen i main istället
+så då blir det (main) A - B - C - D - E (feature) - D(prim) - E (prim) - F (prim).
+Det blir lättare att läsa eftersom historiken blir linjär och lätt att läsa. Det blir också enklare att merga eftersom det inte uppstår en merge commit.
+
+Merge är bättre när du vill behålla commit historiken så att alla kan se exakt vad det är som har commitats. 
+T.ex. om du har gjort tre ändringar som egentligen kunde commitats som en commit, men du väljer att commita alla individuellt.
+OM du då bara mergar så kommer alla commits fortfarande synas. Det kan t.ex. vara bra om man letar efter buggar eller liknande och vill reverta till en väldigt specifik commit.
